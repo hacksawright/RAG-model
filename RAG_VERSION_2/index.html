@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        .warpper {
+           width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            
+        }
+        #chatbox {
+            border-radius: 20px;
+            padding: 15px 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            height: 500px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 80%;
+            white-space: pre-wrap;
+        }
+        .user {
+            background-color: #d1e7ff;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .bot {
+            background-color: #e2e2e2;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+        #input-area {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        #question {
+            width: 100%;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 30px;
+            border: 1px solid #ccc;
+            height:70px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            margin-left: 10px;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .typing::after {
+            content: ' ▌';
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>🤖 Chat với AI</h2>
+<div class="warpper">
+    <div id="chatbox"></div>
+    <div id="input-area">
+        <input type="text" id="question" placeholder="Nhập câu hỏi của bạn...">
+        <!-- <button onclick="sendQuestion()">Gửi</button> -->
+    </div>
+</div>
+    <script>
+        const chatbox = document.getElementById("chatbox");
+
+        async function sendQuestion() {
+            const input = document.getElementById("question");
+            const question = input.value.trim();
+            if (!question) return;
+
+            // Hiển thị câu hỏi
+            appendMessage("🧑 Bạn", question, "user");
+
+            input.value = "";
+            input.disabled = true;
+
+            // Tạo placeholder bot message "Đang trả lời..."
+            const botMsg = appendMessage("🤖 AI", "Đang trả lời...", "bot");
+            botMsg.classList.add("typing");
+
+            try {
+                const res = await fetch("http://127.0.0.1:5000/ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ question })
+                });
+
+                const data = await res.json();
+                const fullText = data.response || "Không có phản hồi!";
+
+                // Hiệu ứng gõ từng chữ
+                await typeText(botMsg, fullText);
+            } catch (err) {
+                botMsg.textContent = "⚠️ Lỗi khi gửi yêu cầu: " + err;
+            } finally {
+                botMsg.classList.remove("typing");
+                input.disabled = false;
+                input.focus();
+            }
+        }
+
+        function appendMessage(sender, text, cls) {
+            const msg = document.createElement("div");
+            msg.className = "message " + cls;
+            msg.textContent = `${sender}: ${text}`;
+            chatbox.appendChild(msg);
+            chatbox.scrollTop = chatbox.scrollHeight;
+            return msg;
+        }
+
+        async function typeText(element, text) {
+            element.textContent = "🤖 AI: ";
+            for (let i = 0; i < text.length; i++) {
+                element.textContent += text[i];
+                chatbox.scrollTop = chatbox.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, 20));  // tốc độ gõ
+            }
+        }
+
+        // Gửi bằng Enter
+        document.getElementById("question").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") sendQuestion();
+        });
+    </script>
+
+</body>
+</html>
