@@ -6,7 +6,7 @@ from langchain_community.embeddings import GPT4AllEmbeddings
 import google.generativeai as genai
 
 # Cấu hình Gemini API key
-genai.configure(api_key="AIzaSyABRVpyQlZzD3oxDY6UrXN-r6Bfhe8R83w")
+genai.configure(api_key="")
 
 # Load vector DB
 embedding_model = GPT4AllEmbeddings(model_file="all-MiniLM-L6-v2-bf16.gguf")
