@@ -5,7 +5,7 @@ from langchain_community.vectorstores import MongoDBAtlasVectorSearch
 import google.generativeai as genai
 
 # Cấu hình Gemini API key
-genai.configure(api_key="AIzaSyA7EdJM8tB0w4EJM7yhybQtEi6-WibRfNI")
+genai.configure(api_key="")
 
 # 2. Hàm get embedding
 def get_embedding(text: str):
