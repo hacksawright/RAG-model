@@ -4,7 +4,7 @@ import google.generativeai as genai
 # ============================
 # 1. Cấu hình API key Gemini
 # ============================
-genai.configure(api_key="AIzaSyA7EdJM8tB0w4EJM7yhybQtEi6-WibRfNI")
+genai.configure(api_key="")
 
 def get_embedding(text: str):
     """Sinh embedding từ Gemini."""
@@ -17,7 +17,7 @@ def get_embedding(text: str):
 # ============================
 # 2. Kết nối Mongo Atlas
 # ============================
-client = MongoClient("mongodb+srv://nductrung779:12345@trr1.kfctgrg.mongodb.net/")
+client = MongoClient("mongodb+srv://nductrung779:matkhau@trr1.kfctgrg.mongodb.net/")
 db = client["test"]          # thay bằng tên database
 collection = db["test"]      # thay bằng tên collection
 
